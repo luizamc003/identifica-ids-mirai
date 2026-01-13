@@ -45,12 +45,14 @@ class Prepare_data:
         cols_to_read = self.selected_features + [self.target]
         
         # O pandas vai ler apenas o que for útil
-        chunks = pd.read_csv(input_path, chunksize=100000, usecols=cols_to_read)
+        chunks = pd.read_csv(f"dataset/{input_path}", chunksize=100000, usecols=cols_to_read)
         
+        # vou usar porque no artigo falou
+        # vai processar em partes
         for chunk in chunks:
             processed_chunk = self.clean_and_filter(chunk)
             if not processed_chunk.empty:
-                processed_chunk.to_csv(output_path, mode='a', index=False, header=first_chunk)
+                processed_chunk.to_csv(f"dataset/output_path", mode='a', index=False, header=first_chunk)
                 first_chunk = False
 
     def transform(self, processed_csv_path):
