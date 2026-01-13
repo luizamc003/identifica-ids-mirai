@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 
 class XGBoostModel:
-    def __init__(self, X, y, output_dir="results"):
+    #  Adicione o parâmetro 'scaler' no init
+    def __init__(self, X, y, scaler, output_dir="results"): 
         self.output_dir = output_dir
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         
-        # 1. Configuração do Modelo
         self.model = XGBClassifier(
             n_estimators=100,
             max_depth=6,
@@ -24,11 +24,13 @@ class XGBoostModel:
         )
         self.encoder = LabelEncoder()
 
-        # --- EXECUÇÃO AUTOMÁTICA ---
+        # --- EXECUÇÃO ---
         X_test, y_test = self._train(X, y)
         self._evaluate(X_test, y_test)
         self._plot_importance(X.columns if hasattr(X, 'columns') else None)
-        self._save_model()
+        
+        # PASSE O SCALER AQUI
+        self._save_model(scaler) 
         print(f"\n Processo concluído! Resultados em: {self.output_dir}")
 
     def _train(self, X, y):
@@ -76,6 +78,10 @@ class XGBoostModel:
         plt.savefig(os.path.join(self.output_dir, "importancia_features.png"))
         plt.close()
 
-    def _save_model(self):
+    def _save_model(self, scaler): # Receba o scaler aqui
         model_path = os.path.join(self.output_dir, "xgb_mirai_model.pkl")
-        joblib.dump({'model': self.model, 'encoder': self.encoder}, model_path)
+        joblib.dump({
+            'model': self.model, 
+            'encoder': self.encoder,
+            'scaler': scaler  # SALVE O SCALER AQUI
+        }, model_path)
