@@ -18,24 +18,33 @@ class ModelValidator:
     def run_stress_test(self, test_csv_path, sample_size=50000):
         print(f"Iniciando teste de stress em: {test_csv_path}")
         
-        # 1. Carrega dados que o modelo nunca viu (usando uma semente aleatória diferente)
+        # 1. Carrega o combo salvo (Modelo + Encoder + Scaler)
+        # IMPORTANTE: Você precisa ter salvado o scaler no joblib anteriormente!
+        data = joblib.load("results/xgb_mirai_model.pkl")
+        model = data['model']
+        encoder = data['encoder']
+        scaler = data['scaler'] # <--- VOCÊ PRECISA DISSO AQUI
+        
         df_new = pd.read_csv(test_csv_path).sample(n=sample_size, random_state=99)
         
-        # 2. Prepara as features (precisa ser exatamente a mesma ordem do treino)
         features = [
             'rst_count', 'Header_Length', 'Min', 'Variance', 'UDP', 
             'Covariance', 'TCP', 'Magnitue', 'Duration', 
             'Number', 'Weight', 'Tot size', 'IAT'
         ]
         
-        X_test = df_new[features]
+        X_raw = df_new[features]
         y_true_labels = df_new['label']
         
-        # 3. Converte os labels de texto para os números que o XGBoost entende
-        y_true = self.encoder.transform(y_true_labels)
+        # --- AQUI ESTAVA O ERRO ---
+        # 2. Normaliza os novos dados usando o MESMO scaler do treino
+        X_test_scaled = scaler.transform(X_raw) 
         
-        # 4. Predição (O momento da verdade)
-        y_pred = self.model.predict(X_test)
+        # 3. Converte labels
+        y_true = encoder.transform(y_true_labels)
+        
+        # 4. Predição usando os dados ESCALONADOS
+        y_pred = model.predict(X_test_scaled)
         
         # 5. Relatório Técnico
         self._generate_results(y_true, y_pred)

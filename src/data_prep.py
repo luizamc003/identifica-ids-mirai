@@ -56,14 +56,14 @@ class Prepare_data:
                 first_chunk = False
 
     def transform(self, processed_csv_path):
-        """
-        Lê o arquivo já filtrado e aplica a normalização (StandardScaler)
-        """
         df = pd.read_csv(processed_csv_path)
         X = df[self.selected_features]
         y = df[self.target]
         
-        # O StandardScaler é aplicado aqui para preparar para o modelo
-        X_scaled = self.scaler.fit_transform(X)
+        # REMOVA o fit daqui se quiser consistência. 
+        # O ideal é o Scaler ser ajustado no conjunto de TREINO apenas.
+        X_scaled = self.scaler.fit_transform(X) 
         
-        return X_scaled, y
+        # Para o XGBoost não perder os nomes das colunas:
+        X_df = pd.DataFrame(X_scaled, columns=self.selected_features)
+        return X_df, y
