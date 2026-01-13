@@ -52,7 +52,7 @@ class Prepare_data:
         for chunk in chunks:
             processed_chunk = self.clean_and_filter(chunk)
             if not processed_chunk.empty:
-                processed_chunk.to_csv(f"dataset/output_path", mode='a', index=False, header=first_chunk)
+                processed_chunk.to_csv(f"dataset/{output_path}", mode='a', index=False, header=first_chunk)
                 first_chunk = False
 
     def transform(self, processed_csv_path):
