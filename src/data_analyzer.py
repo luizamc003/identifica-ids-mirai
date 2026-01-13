@@ -31,7 +31,7 @@ class DataAnalyzer:
             f.write("\n\n--- Médias por Classe ---\n")
             f.write(self.df.groupby('label').mean().to_string())
         
-        print(f"elatório salvo em: {report_path}")
+        print(f"Relatório salvo em: {report_path}")
 
     def plot_class_distribution(self):
         plt.figure(figsize=(12, 6))
