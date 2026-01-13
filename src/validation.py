@@ -10,22 +10,23 @@ class ModelValidator:
             raise FileNotFoundError(f"Modelo não encontrado em {model_path}")
         
         # Carrega o dicionário que salvamos com modelo e encoder
+        self.model_path = model_path
         data = joblib.load(model_path)
         self.model = data['model']
         self.encoder = data['encoder']
         print(f"Modelo e Encoder carregados com sucesso!")
 
-    def run_stress_test(self, test_csv_path, sample_size=50000):
-        print(f"Iniciando teste de stress em: {test_csv_path}")
+    def run_stress_test(self, sample_size=50000, dataset_test=''):
+        print(f"Iniciando teste de stress em: {dataset_test}")
         
         # 1. Carrega o combo salvo (Modelo + Encoder + Scaler)
         # IMPORTANTE: Você precisa ter salvado o scaler no joblib anteriormente!
-        data = joblib.load("results/xgb_mirai_model.pkl")
+        data = joblib.load(self.model_path)
         model = data['model']
         encoder = data['encoder']
         scaler = data['scaler'] # <--- VOCÊ PRECISA DISSO AQUI
         
-        df_new = pd.read_csv(test_csv_path).sample(n=sample_size, random_state=99)
+        df_new = pd.read_csv(dataset_test).sample(n=sample_size, random_state=99)
         
         features = [
             'rst_count', 'Header_Length', 'Min', 'Variance', 'UDP', 
