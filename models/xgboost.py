@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import RandomizedSearchCV 
 
 class XGBoostModel:
     def __init__(self, X, y, scaler, label_encoder, output_dir="results"):
@@ -20,6 +21,7 @@ class XGBoostModel:
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         
+        #treinei os modelos com esse parametro
         self.model = XGBClassifier(
             n_estimators=100,
             max_depth=6,
@@ -28,6 +30,8 @@ class XGBoostModel:
             random_state=42,
             eval_metric='mlogloss'
         )
+        
+        
         
         # Guarda o encoder e scaler que já vêm prontos
         self.encoder = label_encoder
@@ -42,7 +46,7 @@ class XGBoostModel:
         
         print(f"\nProcesso concluído! Resultados em: {self.output_dir}")
     
-    def _train(self, X, y):
+    def _train_sem_grid_search(self, X, y):
         """Divide e treina o modelo"""
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.25, random_state=42, stratify=y
@@ -54,6 +58,44 @@ class XGBoostModel:
         
         self.model.fit(X_train, y_train)
         print(" Treinamento concluído!")
+        
+        return X_test, y_test
+
+    def _train(self, X, y):
+        """Divide e realiza busca de melhores parâmetros antes de treinar"""
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.25, random_state=42, stratify=y
+        )
+
+        # Definição do espaço de busca (Grid)
+        param_dist = {
+            'n_estimators': [100, 200, 300],
+            'max_depth': [3, 6, 9],
+            'learning_rate': [0.01, 0.1, 0.2],
+            'subsample': [0.8, 1.0],
+            'colsample_bytree': [0.8, 1.0],
+        }
+
+        print(" Iniciando busca pelos melhores parâmetros (Randomized Search)...")
+        
+        search = RandomizedSearchCV(
+            self.model, 
+            param_distributions=param_dist,
+            n_iter=10,           # Testa 10 combinações aleatórias
+            cv=3,                # Cross-validation em 3 dobras
+            scoring='accuracy',
+            verbose=1,
+            random_state=42,
+            n_jobs=-1            # Usa todos os núcleos 
+        )
+
+        search.fit(X_train, y_train)
+        
+        # Atualiza o modelo da classe com os melhores parâmetros encontrados
+        self.model = search.best_estimator_
+        
+        print(f"Melhores parâmetros encontrados: {search.best_params_}")
+        print(f"Melhor score no treino: {search.best_score_:.4f}")
         
         return X_test, y_test
     
@@ -136,4 +178,4 @@ class XGBoostModel:
             'features': list(self.model.feature_names_in_) if hasattr(self.model, 'feature_names_in_') else None
         }, model_path)
         
-        print(f"✅ Modelo completo salvo: {model_path}")
+        print(f"Modelo completo salvo: {model_path}")

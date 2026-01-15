@@ -268,6 +268,6 @@ class DataAnalyzer:
         self.plot_feature_distributions(use_log=True)
         
         print("\n" + "="*70)
-        print(f"✅ ANÁLISE COMPLETA FINALIZADA!")
-        print(f"📁 Todos os arquivos foram salvos em: '{self.output_dir}'")
+        print(f" ANÁLISE COMPLETA FINALIZADA!")
+        print(f" Todos os arquivos foram salvos em: '{self.output_dir}'")
         print("="*70)

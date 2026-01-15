@@ -18,18 +18,18 @@ if __name__ == "__main__":
     
     print("ANALISANDO DADOS BRUTOS:")
 
-    # Analisa o dataset processado
+    # # Analisa o dataset processado
     analyzer = DataAnalyzer("dataset/dataset.csv", output_dir="analise_exploratoria")
     
-    # Executa todas as análises
-    analyzer.run_all(features_to_plot=[
-        "Header_Length", 
-        "Number", 
-        "Duration", 
-        "Tot size",
-        "IAT",  # Se ainda existir no seu dataset
-        "Variance"
-    ])
+    # # Executa todas as análises
+    # analyzer.run_all(features_to_plot=[
+    #     "Header_Length", 
+    #     "Number", 
+    #     "Duration", 
+    #     "Tot size",
+    #     "IAT",  
+    #     "Variance"
+    # ])
     
     # ============================================================
     # PREPARACAO DE DADOS
@@ -102,6 +102,7 @@ if __name__ == "__main__":
     val_df.to_csv(VAL_DATASET, index=False)
     
     # Segunda divisão - 75% treino, 25% teste dos 90% restantes
+    #stratify para embaralhar
     X_train_raw, X_test_raw, y_train, y_test = train_test_split(
         X_rest, y_rest, test_size=0.25, random_state=42, stratify=y_rest
     )

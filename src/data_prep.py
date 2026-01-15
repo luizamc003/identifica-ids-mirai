@@ -7,9 +7,10 @@ class Prepare_data:
     def __init__(self):
         # REMOVIDAS: Weight e IAT (99.9% correlacionadas com Number)
         self.selected_features = [
-            'rst_count', 'Header_Length', 'Min', 'Variance', 'UDP', 
+            'rst_count', 'Header_Length', 'Min', 'Variance', 
+            # 'UDP', 
             'Covariance', 'TCP', 'Magnitue', 'Duration', 
-            'Number',  # Mantemos apenas Number
+            # 'Number',  # Mantemos apenas Number
             'Tot size'
         ]
         self.target = 'label'

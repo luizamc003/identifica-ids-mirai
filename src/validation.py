@@ -55,9 +55,11 @@ class ModelValidator:
         # IMPORTANTE: Usar as mesmas features que o modelo foi treinado
         # Features SEM Weight e IAT (removidas por correlação)
         features = [
-            'rst_count', 'Header_Length', 'Min', 'Variance', 'UDP', 
+            'rst_count', 'Header_Length', 'Min', 'Variance', 
+            # 'UDP', 
             'Covariance', 'TCP', 'Magnitue', 'Duration', 
-            'Number', 'Tot size'
+            # 'Number', 
+            'Tot size'
         ]
         
         # Verifica se todas as features existem no dataset
