@@ -1,0 +1,16 @@
+============================================================
+RELATÓRIO DE VALIDAÇÃO EXTERNA (STRESS TEST)
+============================================================
+
+Acurácia Geral: 0.9825 (98.25%)
+
+                    precision    recall  f1-score   support
+
+     BenignTraffic     0.9955    0.9994    0.9974     12638
+Mirai-greeth_flood     0.9665    0.9319    0.9488      4359
+ Mirai-greip_flood     0.9278    0.9577    0.9425      3999
+    Mirai-udpplain     0.9975    0.9950    0.9962      8535
+
+          accuracy                         0.9825     29531
+         macro avg     0.9718    0.9710    0.9713     29531
+      weighted avg     0.9826    0.9825    0.9825     29531

@@ -8,6 +8,8 @@ from sklearn.metrics import classification_report, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import RandomizedSearchCV 
+from sklearn.model_selection import learning_curve
+
 
 class XGBoostModel:
     def __init__(self, X, y, scaler, label_encoder, output_dir="results"):
@@ -62,40 +64,32 @@ class XGBoostModel:
         return X_test, y_test
 
     def _train(self, X, y):
-        """Divide e realiza busca de melhores parâmetros antes de treinar"""
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.25, random_state=42, stratify=y
         )
 
-        # Definição do espaço de busca (Grid)
+        # Espaço de busca para melhorar os 98.33%
         param_dist = {
-            'n_estimators': [100, 200, 300],
-            'max_depth': [3, 6, 9],
-            'learning_rate': [0.01, 0.1, 0.2],
+            'n_estimators': [100, 200],
+            'max_depth': [4, 6, 8],
+            'learning_rate': [0.05, 0.1, 0.2],
             'subsample': [0.8, 1.0],
-            'colsample_bytree': [0.8, 1.0],
+            'colsample_bytree': [0.8, 1.0]
         }
 
-        print(" Iniciando busca pelos melhores parâmetros (Randomized Search)...")
-        
+        print(" Iniciando Randomized Search (Tuning)...")
         search = RandomizedSearchCV(
-            self.model, 
-            param_distributions=param_dist,
-            n_iter=10,           # Testa 10 combinações aleatórias
-            cv=3,                # Cross-validation em 3 dobras
-            scoring='accuracy',
-            verbose=1,
-            random_state=42,
-            n_jobs=-1            # Usa todos os núcleos 
+            self.model, param_distributions=param_dist, 
+            n_iter=5, cv=3, n_jobs=-1, random_state=42
         )
-
-        search.fit(X_train, y_train)
         
-        # Atualiza o modelo da classe com os melhores parâmetros encontrados
+        search.fit(X_train, y_train)
         self.model = search.best_estimator_
         
-        print(f"Melhores parâmetros encontrados: {search.best_params_}")
-        print(f"Melhor score no treino: {search.best_score_:.4f}")
+        print(f" Melhores parâmetros: {search.best_params_}")
+        
+        # Chama a curva de aprendizado após o treino
+        self._plot_learning_curve(X_train, y_train)
         
         return X_test, y_test
     
@@ -179,3 +173,30 @@ class XGBoostModel:
         }, model_path)
         
         print(f"Modelo completo salvo: {model_path}")
+        
+    def _plot_learning_curve(self, X, y):
+        print("\nGerando Curva de Aprendizado (isso pode demorar um pouco)...")
+        
+        train_sizes, train_scores, test_scores = learning_curve(
+            self.model, X, y, cv=3, n_jobs=-1, 
+            train_sizes=np.linspace(0.1, 1.0, 5),
+            scoring='accuracy'
+        )
+
+        train_mean = np.mean(train_scores, axis=1)
+        test_mean = np.mean(test_scores, axis=1)
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(train_sizes, train_mean, 'o-', color="r", label="Treino")
+        plt.plot(train_sizes, test_mean, 'o-', color="g", label="Validação Cruzada")
+        
+        plt.title("Curva de Aprendizado (XGBoost)")
+        plt.xlabel("Amostras de Treinamento")
+        plt.ylabel("Acurácia")
+        plt.legend(loc="best")
+        plt.grid(True)
+        
+        path = os.path.join(self.output_dir, "curva_aprendizado.png")
+        plt.savefig(path, dpi=300)
+        plt.close()
+        print(f"Curva de aprendizado salva: {path}")
