@@ -12,7 +12,6 @@ A proliferação de dispositivos IoT com segurança fragilizada permitiu a ascen
 - **Modelo de ML:** XGBoost (Extreme Gradient Boosting)
 - **Processamento de Dados:** Pandas, Scikit-learn
 - **Dataset:** CICIoT2023 (focado em ataques IoT reais)
-- **Ferramenta de Captura:** Pcap2csv (para consistência entre treino e inferência)
 
 ## Estrutura do Modelo
 
@@ -37,8 +36,10 @@ O modelo foi treinado utilizando uma seleção otimizada de **13 instâncias (fe
 O modelo foi submetido a um teste de stress (validação externa), apresentando os seguintes resultados:
 
 - **Acurácia Geral:** 98.37%
-- **Precisão Benigna:** 1.0000 (Zero Falsos Positivos)
-- **Destaque:** O uso do parâmetro `tree_method='hist'` permitiu um treino extremamente rápido, tornando o modelo viável para hardware limitado.
+
+## Rodando o código
+
+Coloque o dataset original na pasta 'dataset', com o nome de **dataset.csv**. Esse será o RAWDATASET.
 
 ## Referência
 
