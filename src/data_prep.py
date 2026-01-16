@@ -10,8 +10,9 @@ class Prepare_data:
             'rst_count', 'Header_Length', 'Min', 'Variance', 
             # 'UDP', 
             'Covariance', 'TCP', 'Magnitue', 'Duration', 
-            # 'Number',  # Mantemos apenas Number
-            'Tot size'
+            'Number',  # Mantemos apenas Number, tirei a iat
+            'Tot size',
+            # 'IAT'
         ]
         self.target = 'label'
         self.scaler = StandardScaler() 

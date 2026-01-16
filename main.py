@@ -19,7 +19,6 @@ if __name__ == "__main__":
     print("ANALISANDO DADOS BRUTOS:")
 
     # # Analisa o dataset processado
-    analyzer = DataAnalyzer("dataset/dataset.csv", output_dir="analise_exploratoria")
     
     # # Executa todas as análises
     # analyzer.run_all(features_to_plot=[
@@ -47,6 +46,16 @@ if __name__ == "__main__":
     X_raw, y_raw = prepare_data.load_raw_data(PROCESSED_DATASET)
     print(f" Dataset carregado: {len(X_raw)} amostras, {len(X_raw.columns)} features")
     
+    analyzer = DataAnalyzer(PROCESSED_DATASET, output_dir="analise_exploratoria")
+    
+    analyzer.run_all(features_to_plot=[
+        "Header_Length", 
+        "Number", 
+        "Duration", 
+        "Tot size",
+        "IAT",  
+        "Variance"
+    ])
     # ============================================================
     # CODIFICAÇÃO DOS LABELS
     # ============================================================

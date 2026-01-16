@@ -1,0 +1,14 @@
+============================================================
+RELATÓRIO DE TREINAMENTO - XGBoost Mirai Detection
+============================================================
+
+                    precision    recall  f1-score   support
+
+     BenignTraffic     1.0000    1.0000    1.0000     21326
+Mirai-greeth_flood     0.9679    0.9293    0.9482      7369
+ Mirai-greip_flood     0.9244    0.9654    0.9444      6762
+    Mirai-udpplain     0.9969    0.9965    0.9967     14416
+
+          accuracy                         0.9838     49873
+         macro avg     0.9723    0.9728    0.9723     49873
+      weighted avg     0.9841    0.9838    0.9839     49873

@@ -58,8 +58,9 @@ class ModelValidator:
             'rst_count', 'Header_Length', 'Min', 'Variance', 
             # 'UDP', 
             'Covariance', 'TCP', 'Magnitue', 'Duration', 
-            # 'Number', 
-            'Tot size'
+            'Number',  # Mantemos apenas Number, tirei a iat
+            'Tot size',
+            # 'IAT'
         ]
         
         # Verifica se todas as features existem no dataset
